@@ -6,6 +6,7 @@
   "rules": {
     "prettier/prettier": ["error"],
     "no-unused-vars": ["error", { "destructuredArrayIgnorePattern": "^_" }],
-    "react/no-unknown-property": ["error", { "ignore": ["css"] }]
+    "react/no-unknown-property": ["error", { "ignore": ["css"] }],
+    "import/prefer-default-export": "off"
   }
 }

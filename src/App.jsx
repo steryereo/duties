@@ -1,33 +1,35 @@
 import React, { useEffect, useState } from "react";
 
+import * as styles from "./styles";
+
 import getInitialData from "./getInitialData";
-import shuffle from "./shuffle";
+import shuffleNames from "./shuffleNames";
 
 const SIXTY_FPS_DELAY = 17;
-const MAX_DELAY = 750;
+const MAX_DELAY = 600;
 const DELAY_COEFFICIENT = 1.15;
 
 function App() {
-  const [initState, setInitState] = useState({});
-  const [people, setPeople] = useState({});
+  const [duties, setDuties] = useState(null);
+  const [people, setPeople] = useState(null);
 
-  const [delay, setDelay] = useState(SIXTY_FPS_DELAY)
+  const [delay, setDelay] = useState(SIXTY_FPS_DELAY);
 
-  const [spinning, setSpinning] = useState(false);
-  const [done, setDone] = useState(false);
+  const [isSpinning, setIsSpinning] = useState(false);
+  const [isDone, setIsDone] = useState(false);
 
   useEffect(() => {
     const initData = getInitialData();
-    setInitState(initData);
+    setDuties(initData.duties);
     setPeople(initData.people);
   }, []);
 
   useEffect(() => {
-    if (!spinning) return;
+    if (!isSpinning) return;
 
     if (delay > MAX_DELAY) {
-      setSpinning(false);
-      setDone(true);
+      setIsSpinning(false);
+      setIsDone(true);
       setDelay(SIXTY_FPS_DELAY);
 
       return;
@@ -36,33 +38,42 @@ function App() {
     const newDelay = delay * DELAY_COEFFICIENT;
 
     setTimeout(() => {
-      setPeople((p) => shuffle(p));
+      setPeople((p) => shuffleNames(p));
       setDelay(newDelay);
     }, newDelay);
-  }, [delay, spinning]);
+  }, [delay, isSpinning]);
 
   function spinTheWheel() {
-    setSpinning(true);
-    setDone(false);
+    setIsSpinning(true);
+    setIsDone(false);
   }
-
-  const { duties } = initState;
 
   if (!duties) return null;
 
   return (
-    <div>
-      <ul css={{ listStyle: "none!important" }}>
-        {duties.map((duty, i) => (
-          <li key={duty}>
-            <span>{duty}:</span>
-            <span css={{ color: done ? "green" : "black" }}>{people[i]}</span>
-          </li>
-        ))}
-      </ul>
-      <button disabled={spinning} type="button" onClick={spinTheWheel}>
-        Shuffle!
-      </button>
+    <div css={styles.wrapper}>
+      <section css={styles.card}>
+        <ul css={styles.list}>
+          {duties.map((duty, i) => (
+            <li css={styles.dutyItem} key={duty}>
+              <span css={styles.dutyLabel}>{duty}:</span>
+              <span css={[styles.person, isDone ? styles.chosen : null]}>
+                {people[i]}
+              </span>
+            </li>
+          ))}
+        </ul>
+        <div css={styles.buttons}>
+          <button
+            css={styles.button}
+            disabled={isSpinning}
+            type="button"
+            onClick={spinTheWheel}
+          >
+            Randomize!
+          </button>
+        </div>
+      </section>
     </div>
   );
 }
