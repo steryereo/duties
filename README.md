@@ -14,3 +14,5 @@ yarn build
 ```
 
 then load the `dist` directory into Chrome according to [this guide]( https://developer.chrome.com/docs/extensions/mv3/getstarted/#unpacked)
+
+
